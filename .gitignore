@@ -1,0 +1,83 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+# === Root ===
+node_modules/
+.env
+.env.local
+.env.development
+.env.production
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# === Client (React) ===
+client/node_modules/
+client/.env
+client/.DS_Store
+client/build/
+client/dist/
+client/coverage/
+
+# === Server (Express) ===
+server/node_modules/
+server/.env
+server/.DS_Store
+server/logs/
+server/coverage/
+server/tmp/
+server/.cache/
+
+# === OS-specific ===
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# === Editor / IDE ===
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# === Logs ===
+*.log
+logs/
+*.log.*
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+lerna-debug.log*
+
+# === Misc ===
+*.local
+*.cache
+*.bak
+*.swp
