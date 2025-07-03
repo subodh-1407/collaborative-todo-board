@@ -7,6 +7,30 @@ import { API_CONFIG } from "../config/api"
 // Configure axios
 axios.defaults.baseURL = API_CONFIG.baseURL
 axios.defaults.timeout = API_CONFIG.timeout
+axios.defaults.withCredentials = API_CONFIG.withCredentials
+
+// Add request interceptor for debugging
+axios.interceptors.request.use(
+  (config) => {
+    console.log("Making request to:", config.baseURL + config.url)
+    return config
+  },
+  (error) => {
+    console.error("Request error:", error)
+    return Promise.reject(error)
+  },
+)
+
+// Add response interceptor for debugging
+axios.interceptors.response.use(
+  (response) => {
+    return response
+  },
+  (error) => {
+    console.error("Response error:", error.response?.status, error.response?.data || error.message)
+    return Promise.reject(error)
+  },
+)
 
 const AuthContext = createContext()
 
@@ -35,6 +59,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
+      console.log("Attempting login to:", axios.defaults.baseURL + "/api/auth/login")
+
       const response = await axios.post("/api/auth/login", { email, password })
       const { token, user } = response.data
 
@@ -45,16 +71,32 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true }
     } catch (error) {
-      console.error("Login error:", error)
+      console.error("Login error details:", {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        config: error.config,
+      })
+
+      let errorMessage = "Login failed"
+
+      if (error.code === "ERR_NETWORK") {
+        errorMessage = "Network error - please check if the server is running"
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message
+      }
+
       return {
         success: false,
-        message: error.response?.data?.message || "Login failed",
+        message: errorMessage,
       }
     }
   }
 
   const register = async (name, email, password) => {
     try {
+      console.log("Attempting registration to:", axios.defaults.baseURL + "/api/auth/register")
+
       const response = await axios.post("/api/auth/register", { name, email, password })
       const { token, user } = response.data
 
@@ -65,10 +107,24 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true }
     } catch (error) {
-      console.error("Registration error:", error)
+      console.error("Registration error details:", {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        config: error.config,
+      })
+
+      let errorMessage = "Registration failed"
+
+      if (error.code === "ERR_NETWORK") {
+        errorMessage = "Network error - please check if the server is running"
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message
+      }
+
       return {
         success: false,
-        message: error.response?.data?.message || "Registration failed",
+        message: errorMessage,
       }
     }
   }
